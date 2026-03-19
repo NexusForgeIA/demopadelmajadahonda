@@ -391,7 +391,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
             <div class="step-label-badge">Paso 3 · Confirma tu reserva</div>
           </div>
 
-          <!-- STEP 4: ÉXITO -->
+          <!-- STEP 4: PAGO -->
           <div class="step" id="step-3">
             <div class="s-header">
               <div class="s-logo">Pádel<span>Maj.</span></div>
@@ -400,21 +400,120 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
                 <span style="font-size:.65rem;color:var(--text);">Juan G.</span>
               </div>
             </div>
+            <div class="s-body">
+              <div class="s-section">Datos de pago</div>
+              <!-- MINI CARD VISUAL -->
+              <div style="background:linear-gradient(135deg,#0d2a4a,#0a3d6b);border-radius:10px;padding:.8rem;margin-bottom:.7rem;position:relative;overflow:hidden;">
+                <div style="position:absolute;right:-20px;top:-20px;width:80px;height:80px;border-radius:50%;background:rgba(0,191,255,.1);"></div>
+                <div style="position:absolute;right:10px;top:-10px;width:50px;height:50px;border-radius:50%;background:rgba(0,191,255,.07);"></div>
+                <div style="font-size:.55rem;color:rgba(255,255,255,.5);letter-spacing:1px;text-transform:uppercase;margin-bottom:.4rem;">Tarjeta de pago</div>
+                <div style="font-family:'DM Mono';font-size:.7rem;letter-spacing:3px;color:#fff;margin-bottom:.5rem;" id="cardNumDisplay">•••• •••• •••• ••••</div>
+                <div style="display:flex;justify-content:space-between;align-items:flex-end;">
+                  <div>
+                    <div style="font-size:.48rem;color:rgba(255,255,255,.5);text-transform:uppercase;">Titular</div>
+                    <div style="font-size:.62rem;color:#fff;font-family:'DM Mono';" id="cardNameDisplay">JUAN GARCIA</div>
+                  </div>
+                  <div style="text-align:right;">
+                    <div style="font-size:.48rem;color:rgba(255,255,255,.5);text-transform:uppercase;">Caduca</div>
+                    <div style="font-size:.62rem;color:#fff;font-family:'DM Mono';">06/28</div>
+                  </div>
+                  <div style="font-size:1.2rem;">💳</div>
+                </div>
+              </div>
+              <!-- FORM FIELDS -->
+              <div style="display:flex;flex-direction:column;gap:.4rem;">
+                <div style="background:var(--card);border:1px solid var(--border);border-radius:7px;padding:.45rem .6rem;">
+                  <div style="font-size:.48rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:.2rem;">Titular</div>
+                  <div style="font-size:.65rem;font-family:'DM Mono';color:var(--text);" id="animName">JUAN GARCIA</div>
+                </div>
+                <div style="background:var(--card);border:1.5px solid var(--blue);border-radius:7px;padding:.45rem .6rem;">
+                  <div style="font-size:.48rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:.2rem;">Número de tarjeta</div>
+                  <div style="font-size:.65rem;font-family:'DM Mono';color:var(--text);" id="animCard">4532 1234 5678 9012</div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;">
+                  <div style="background:var(--card);border:1px solid var(--border);border-radius:7px;padding:.45rem .6rem;">
+                    <div style="font-size:.48rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:.2rem;">Caducidad</div>
+                    <div style="font-size:.65rem;font-family:'DM Mono';color:var(--text);">06/28</div>
+                  </div>
+                  <div style="background:var(--card);border:1px solid var(--border);border-radius:7px;padding:.45rem .6rem;">
+                    <div style="font-size:.48rem;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:.2rem;">CVV</div>
+                    <div style="font-size:.65rem;font-family:'DM Mono';color:var(--text);">•••</div>
+                  </div>
+                </div>
+              </div>
+              <!-- TOTAL -->
+              <div style="display:flex;justify-content:space-between;align-items:center;background:var(--bg3);border-radius:7px;padding:.5rem .6rem;margin-top:.5rem;">
+                <span style="font-size:.65rem;color:var(--muted);">Total a pagar</span>
+                <span style="font-family:'Bebas Neue';font-size:1.1rem;color:var(--blue);">18.00 €</span>
+              </div>
+              <div style="font-size:.55rem;color:var(--muted);text-align:center;margin-top:.4rem;">🔒 Pago seguro SSL · Datos encriptados</div>
+              <!-- BOTÓN PAGAR -->
+              <button class="btn-confirm" style="background:linear-gradient(90deg,var(--blue),#0066aa);">PAGAR 18.00 €</button>
+            </div>
+            <div class="step-label-badge">Paso 4 · Pago seguro</div>
+          </div>
+
+          <!-- STEP 5: PROCESANDO -->
+          <div class="step" id="step-4">
+            <div class="s-header">
+              <div class="s-logo">Pádel<span>Maj.</span></div>
+              <div style="display:flex;align-items:center;gap:.4rem;">
+                <div style="width:6px;height:6px;border-radius:50%;background:var(--green);"></div>
+                <span style="font-size:.65rem;color:var(--text);">Juan G.</span>
+              </div>
+            </div>
             <div class="success-screen">
-              <div class="success-check">✓</div>
-              <div class="success-title">¡RESERVA CONFIRMADA!</div>
-              <div class="success-sub">Tu pista está reservada.<br>Hemos enviado la confirmación a tu email.</div>
-              <div class="success-ref" id="demoRef">MAJ-A3F8B2</div>
-              <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.7rem;width:100%;text-align:left;">
-                <div style="font-size:.6rem;color:var(--muted);margin-bottom:.4rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;">Detalles</div>
-                <div style="font-size:.65rem;color:var(--text);line-height:2;font-family:'DM Mono';">
-                  📅 Vie 12 Jun · 18:30h<br>
-                  🎾 Pista 4 · 90 min<br>
-                  💰 18.00 € · Pendiente pago
+              <!-- PROCESSING ANIMATION -->
+              <div style="position:relative;width:70px;height:70px;margin:0 auto 1rem;">
+                <div style="position:absolute;inset:0;border-radius:50%;border:3px solid var(--border);"></div>
+                <div style="position:absolute;inset:0;border-radius:50%;border:3px solid transparent;border-top-color:var(--blue);animation:spin .8s linear infinite;"></div>
+                <div style="position:absolute;inset:8px;border-radius:50%;background:rgba(0,191,255,.08);display:flex;align-items:center;justify-content:center;font-size:1.4rem;">💳</div>
+              </div>
+              <div style="font-family:'Bebas Neue';font-size:1.2rem;color:var(--text);letter-spacing:1px;margin-bottom:.4rem;">PROCESANDO PAGO</div>
+              <div style="color:var(--muted);font-size:.72rem;margin-bottom:1.2rem;">Conectando con la pasarela<br>de pago municipal...</div>
+              <!-- STEPS PROCESADO -->
+              <div style="width:100%;display:flex;flex-direction:column;gap:.4rem;">
+                <div style="display:flex;align-items:center;gap:.6rem;font-size:.65rem;">
+                  <div style="width:16px;height:16px;border-radius:50%;background:rgba(0,232,122,.2);border:1px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:.5rem;flex-shrink:0;">✓</div>
+                  <span style="color:var(--text);">Datos verificados</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:.6rem;font-size:.65rem;">
+                  <div style="width:16px;height:16px;border-radius:50%;background:rgba(0,232,122,.2);border:1px solid var(--green);display:flex;align-items:center;justify-content:center;font-size:.5rem;flex-shrink:0;">✓</div>
+                  <span style="color:var(--text);">Pista reservada</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:.6rem;font-size:.65rem;" id="payStep3">
+                  <div style="width:16px;height:16px;border-radius:50%;border:2px solid var(--border);animation:spin .8s linear infinite;flex-shrink:0;"></div>
+                  <span style="color:var(--muted);">Procesando pago...</span>
                 </div>
               </div>
             </div>
-            <div class="step-label-badge" style="background:rgba(0,232,122,.15);border-color:rgba(0,232,122,.3);color:var(--green);">✓ ¡Reserva completada!</div>
+            <div class="step-label-badge">Procesando...</div>
+          </div>
+
+          <!-- STEP 6: ÉXITO PAGO -->
+          <div class="step" id="step-5">
+            <div class="s-header">
+              <div class="s-logo">Pádel<span>Maj.</span></div>
+              <div style="display:flex;align-items:center;gap:.4rem;">
+                <div style="width:6px;height:6px;border-radius:50%;background:var(--green);"></div>
+                <span style="font-size:.65rem;color:var(--text);">Juan G.</span>
+              </div>
+            </div>
+            <div class="success-screen">
+              <div class="success-check" style="background:rgba(0,232,122,.15);border-color:var(--green);font-size:1.5rem;width:55px;height:55px;">✓</div>
+              <div class="success-title">¡PAGO COMPLETADO!</div>
+              <div class="success-sub">Reserva confirmada y pago procesado.<br>Email de confirmación enviado.</div>
+              <div class="success-ref" id="demoRef">MAJ-A3F8B2</div>
+              <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.7rem;width:100%;text-align:left;">
+                <div style="font-size:.6rem;color:var(--muted);margin-bottom:.4rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;">Resumen</div>
+                <div style="font-size:.65rem;color:var(--text);line-height:2;font-family:'DM Mono';">
+                  📅 Vie 12 Jun · 18:30h<br>
+                  🎾 Pista 4 · 90 min<br>
+                  💳 18.00 € · <span style="color:var(--green);">PAGADO ✓</span>
+                </div>
+              </div>
+            </div>
+            <div class="step-label-badge" style="background:rgba(0,232,122,.15);border-color:rgba(0,232,122,.3);color:var(--green);">✓ ¡Pago completado!</div>
           </div>
 
           <!-- CURSOR -->
@@ -455,8 +554,24 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
         <div class="step-card" onclick="goTo(3)">
           <div class="sc-num">4</div>
           <div class="sc-info">
-            <div class="sc-title">¡Reserva confirmada!</div>
-            <div class="sc-desc">Código único de reserva y email de confirmación automático. Sin llamadas, sin papel.</div>
+            <div class="sc-title">Pago seguro con tarjeta</div>
+            <div class="sc-desc">Formulario de pago encriptado. Compatible con la pasarela de pago municipal.</div>
+          </div>
+          <div class="sc-icon">💳</div>
+        </div>
+        <div class="step-card" onclick="goTo(4)">
+          <div class="sc-num">5</div>
+          <div class="sc-info">
+            <div class="sc-title">Procesando pago</div>
+            <div class="sc-desc">Verificación en tiempo real con la pasarela bancaria. Proceso seguro y rápido.</div>
+          </div>
+          <div class="sc-icon">⏳</div>
+        </div>
+        <div class="step-card" onclick="goTo(5)">
+          <div class="sc-num">6</div>
+          <div class="sc-info">
+            <div class="sc-title">¡Pago completado!</div>
+            <div class="sc-desc">Reserva y pago confirmados. Email automático con código único. Sin llamadas ni papel.</div>
           </div>
           <div class="sc-icon">🎉</div>
         </div>
@@ -519,7 +634,7 @@ let autoPlay = true;
 let playing = false;
 let timer = null;
 let speed = 3000;
-const TOTAL = 4;
+const TOTAL = 6;
 
 // ── CALENDARIO ──
 function buildCal() {
