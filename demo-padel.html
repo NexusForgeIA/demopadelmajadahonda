@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Demo · Pádel Majadahonda</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue:#00BFFF; --blue-dark:#0099cc;
+  --bg:#090d14; --bg2:#0f1620; --bg3:#131d2b;
+  --card:#172030; --border:#1e2e44;
+  --text:#e0eeff; --muted:#6a8aaa;
+  --accent:#FFE033; --red:#ff4d4d; --green:#00e87a;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+
+/* ── OUTER PAGE ── */
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1rem 4rem;
+  background: radial-gradient(ellipse at top, #0d1f35 0%, var(--bg) 60%);
+}
+
+.page-header { text-align:center; margin-bottom: 2.5rem; }
+.page-header .logo { font-family:'Bebas Neue'; font-size:2rem; letter-spacing:3px; color:var(--blue); }
+.page-header .logo span { color:var(--accent); }
+.page-header h1 { font-family:'Bebas Neue'; font-size:clamp(2rem,5vw,3.2rem); letter-spacing:1px; margin:.4rem 0 .6rem; }
+.page-header h1 em { color:var(--blue); font-style:normal; }
+.page-header p { color:var(--muted); font-size:.95rem; }
+
+/* ── DEMO WRAPPER ── */
+.demo-wrapper {
+  width: 100%;
+  max-width: 900px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+@media(max-width:700px){ .demo-wrapper { grid-template-columns: 1fr; } }
+
+/* ── PHONE MOCKUP ── */
+.phone-wrap {
+  display: flex;
+  justify-content: center;
+  position: sticky;
+  top: 1.5rem;
+}
+.phone {
+  width: 280px;
+  height: 560px;
+  background: #0a0e1a;
+  border-radius: 36px;
+  border: 2.5px solid var(--border);
+  box-shadow: 0 30px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(0,191,255,.08), inset 0 1px 0 rgba(255,255,255,.05);
+  overflow: hidden;
+  position: relative;
+}
+.phone-notch {
+  position: absolute; top:0; left:50%; transform:translateX(-50%);
+  width:80px; height:22px; background:#0a0e1a;
+  border-radius:0 0 14px 14px; z-index:10;
+  border: 2px solid var(--border); border-top:none;
+}
+
+/* ── PHONE SCREEN ── */
+.screen { width:100%; height:100%; overflow:hidden; position:relative; }
+
+/* ── STEPS ── */
+.step {
+  position:absolute; inset:0;
+  opacity:0; transform:translateY(16px);
+  transition: opacity .5s ease, transform .5s ease;
+  pointer-events:none;
+  display:flex; flex-direction:column;
+}
+.step.active {
+  opacity:1; transform:translateY(0);
+  pointer-events:auto;
+}
+
+/* STEP HEADER */
+.s-header {
+  background:rgba(9,13,20,.95); backdrop-filter:blur(12px);
+  padding:.6rem 1rem; display:flex; align-items:center; justify-content:space-between;
+  border-bottom:1px solid var(--border); flex-shrink:0; padding-top:1.6rem;
+}
+.s-logo { font-family:'Bebas Neue'; font-size:1rem; letter-spacing:1px; color:var(--blue); }
+.s-logo span { color:var(--accent); }
+.s-login-btn {
+  background:var(--blue); border:none; color:#000; padding:.25rem .7rem;
+  border-radius:999px; font-size:.65rem; font-weight:700; cursor:pointer;
+}
+
+/* STEP BODY */
+.s-body { flex:1; overflow-y:auto; padding:.8rem; scrollbar-width:none; }
+.s-body::-webkit-scrollbar { display:none; }
+
+.s-section { font-size:.55rem; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin:.8rem 0 .5rem; display:flex; align-items:center; gap:.4rem; }
+.s-section::after { content:''; flex:1; height:1px; background:var(--border); }
+
+/* CALENDAR mini */
+.mini-cal { background:var(--card); border-radius:10px; padding:.6rem; border:1px solid var(--border); }
+.mini-cal-nav { display:flex; justify-content:space-between; align-items:center; margin-bottom:.5rem; }
+.mini-cal-month { font-family:'Bebas Neue'; font-size:.85rem; letter-spacing:1px; }
+.mini-cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; }
+.mc-dow { text-align:center; font-size:.45rem; color:var(--muted); font-weight:700; padding:.2rem 0; }
+.mc-day {
+  aspect-ratio:1; display:flex; align-items:center; justify-content:center;
+  border-radius:5px; font-size:.6rem; font-family:'DM Mono'; color:var(--text);
+  border:1px solid transparent; cursor:pointer; transition:.3s;
+}
+.mc-day.past { color:var(--border); }
+.mc-day.selected { background:var(--blue); color:#000; font-weight:700; }
+.mc-day.highlight { border-color:var(--blue); color:var(--blue); }
+
+/* TIME SLOTS mini */
+.mini-slots { display:grid; grid-template-columns:repeat(3,1fr); gap:4px; }
+.ms-slot {
+  padding:.3rem .2rem; text-align:center; background:var(--card); border:1px solid var(--border);
+  border-radius:6px; font-size:.6rem; font-family:'DM Mono'; color:var(--text); cursor:pointer;
+  transition:.3s;
+}
+.ms-slot.taken { background:rgba(255,77,77,.06); border-color:rgba(255,77,77,.2); color:var(--red); font-size:.52rem; }
+.ms-slot.selected { background:var(--blue); border-color:var(--blue); color:#000; font-weight:700; }
+
+/* COURTS mini */
+.mini-courts { display:grid; grid-template-columns:repeat(3,1fr); gap:4px; }
+.mc-court {
+  padding:.5rem .3rem; background:var(--card); border:1.5px solid var(--border);
+  border-radius:8px; text-align:center; cursor:pointer; transition:.3s;
+}
+.mc-court.selected { background:rgba(0,191,255,.15); border-color:var(--blue); }
+.mc-court.taken { opacity:.35; border-color:rgba(255,77,77,.3); }
+.mc-court .ci { font-size:.9rem; margin-bottom:.15rem; }
+.mc-court .cn { font-family:'Bebas Neue'; font-size:.65rem; letter-spacing:.5px; }
+.mc-court .cp { font-family:'DM Mono'; font-size:.55rem; color:var(--blue); margin-top:.1rem; }
+.mc-court .ct { font-size:.48rem; background:rgba(255,77,77,.15); color:var(--red); border-radius:999px; padding:.05rem .3rem; display:inline-block; margin-top:.1rem; }
+
+/* SUMMARY */
+.mini-summary {
+  background:var(--card); border:1px solid var(--border); border-radius:10px; padding:.7rem;
+}
+.ms-row { display:flex; justify-content:space-between; margin-bottom:.4rem; font-size:.62rem; }
+.ms-row .ml { color:var(--muted); }
+.ms-row .mv { font-family:'DM Mono'; font-size:.6rem; }
+.ms-divider { height:1px; background:var(--border); margin:.5rem 0; }
+.ms-total { display:flex; justify-content:space-between; align-items:center; }
+.ms-total .ml { font-weight:700; font-size:.7rem; }
+.ms-total .mp { font-family:'Bebas Neue'; font-size:1.2rem; color:var(--blue); }
+
+.btn-confirm {
+  width:100%; padding:.6rem; background:var(--blue); border:none; border-radius:8px;
+  font-family:'Bebas Neue'; font-size:.9rem; letter-spacing:1.5px; color:#000;
+  cursor:pointer; margin-top:.6rem; position:relative; overflow:hidden;
+}
+.btn-confirm::after {
+  content:''; position:absolute; top:0; left:-100%; width:60%; height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);
+  animation: shine 1.8s infinite;
+}
+@keyframes shine { 0%{left:-100%} 60%,100%{left:160%} }
+
+/* SUCCESS STEP */
+.success-screen {
+  flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:1.5rem; text-align:center;
+  background: radial-gradient(ellipse at center, rgba(0,232,122,.08) 0%, transparent 70%);
+}
+.success-icon-big { font-size:3rem; margin-bottom:.8rem; animation: bounce .6s ease; }
+@keyframes bounce { 0%{transform:scale(0)} 60%{transform:scale(1.2)} 100%{transform:scale(1)} }
+.success-title { font-family:'Bebas Neue'; font-size:1.4rem; color:var(--green); letter-spacing:1px; margin-bottom:.4rem; }
+.success-sub { color:var(--muted); font-size:.72rem; line-height:1.5; margin-bottom:1rem; }
+.success-ref {
+  font-family:'DM Mono'; background:var(--bg); border:1px solid var(--border);
+  border-radius:6px; padding:.4rem .8rem; color:var(--accent); font-size:.75rem;
+  letter-spacing:2px; margin-bottom:1rem;
+}
+.success-check { width:50px; height:50px; border-radius:50%; background:rgba(0,232,122,.15); border:2px solid var(--green); display:flex; align-items:center; justify-content:center; font-size:1.3rem; margin:0 auto .8rem; }
+
+/* ── CONTROLS PANEL ── */
+.controls {
+  display:flex; flex-direction:column; gap:1rem;
+}
+
+.step-cards { display:flex; flex-direction:column; gap:.6rem; }
+.step-card {
+  background:var(--card); border:1.5px solid var(--border); border-radius:12px;
+  padding:1rem 1.2rem; cursor:pointer; transition:.3s;
+  display:flex; align-items:center; gap:.9rem;
+}
+.step-card:hover { border-color:var(--blue); }
+.step-card.active { background:rgba(0,191,255,.08); border-color:var(--blue); }
+.step-card.done { border-color:rgba(0,232,122,.4); }
+.sc-num {
+  width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-family:'Bebas Neue'; font-size:1rem; border:1.5px solid var(--border); color:var(--muted); flex-shrink:0; transition:.3s;
+}
+.step-card.active .sc-num { background:var(--blue); border-color:var(--blue); color:#000; }
+.step-card.done .sc-num { background:rgba(0,232,122,.15); border-color:var(--green); color:var(--green); }
+.sc-info { flex:1; }
+.sc-title { font-weight:600; font-size:.9rem; margin-bottom:.15rem; }
+.sc-desc { font-size:.78rem; color:var(--muted); line-height:1.4; }
+.sc-icon { font-size:1.3rem; }
+
+/* PLAYBACK BAR */
+.playback {
+  background:var(--card); border:1px solid var(--border); border-radius:12px; padding:1rem;
+}
+.pb-title { font-size:.72rem; color:var(--muted); font-weight:600; letter-spacing:.8px; text-transform:uppercase; margin-bottom:.8rem; }
+.pb-progress { height:4px; background:var(--border); border-radius:999px; margin-bottom:.8rem; overflow:hidden; }
+.pb-bar { height:100%; background:var(--blue); border-radius:999px; transition:width .4s ease; }
+.pb-btns { display:flex; gap:.5rem; }
+.pb-btn {
+  flex:1; padding:.55rem; border-radius:8px; border:1.5px solid var(--border);
+  background:transparent; color:var(--text); cursor:pointer; font-size:.82rem; font-family:'DM Sans';
+  transition:.2s; display:flex; align-items:center; justify-content:center; gap:.4rem;
+}
+.pb-btn:hover { border-color:var(--blue); color:var(--blue); }
+.pb-btn.primary { background:var(--blue); border-color:var(--blue); color:#000; font-weight:600; }
+.pb-btn:disabled { opacity:.3; cursor:not-allowed; }
+
+.pb-auto-row { display:flex; align-items:center; justify-content:space-between; margin-top:.7rem; font-size:.78rem; color:var(--muted); }
+.pb-toggle {
+  width:36px; height:20px; border-radius:999px; background:var(--border); cursor:pointer;
+  position:relative; transition:.3s; border:none; flex-shrink:0;
+}
+.pb-toggle.on { background:var(--blue); }
+.pb-toggle::after {
+  content:''; position:absolute; top:2px; left:2px; width:16px; height:16px;
+  border-radius:50%; background:#fff; transition:.3s;
+}
+.pb-toggle.on::after { left:18px; }
+
+.speed-row { display:flex; align-items:center; gap:.5rem; margin-top:.6rem; font-size:.75rem; color:var(--muted); }
+.speed-btn {
+  padding:.25rem .6rem; border-radius:999px; border:1px solid var(--border);
+  background:transparent; color:var(--muted); cursor:pointer; font-size:.72rem; transition:.2s;
+}
+.speed-btn.active { background:var(--bg3); border-color:var(--blue); color:var(--blue); }
+
+/* CURSOR ANIMATION */
+.cursor {
+  position:absolute; width:16px; height:16px; pointer-events:none; z-index:50;
+  transition: left .6s cubic-bezier(.4,0,.2,1), top .6s cubic-bezier(.4,0,.2,1), opacity .3s;
+}
+.cursor::before {
+  content:''; position:absolute; inset:0; border-radius:50%; background:rgba(0,191,255,.6);
+  animation: pulse-cursor 1.2s infinite;
+}
+.cursor::after {
+  content:''; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:6px; height:6px; border-radius:50%; background:var(--blue);
+}
+@keyframes pulse-cursor { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(2);opacity:.4} }
+
+/* CLICK RIPPLE */
+.ripple {
+  position:absolute; width:30px; height:30px; border-radius:50%;
+  background:rgba(0,191,255,.4); pointer-events:none; z-index:51;
+  animation: ripple-anim .5s ease forwards;
+}
+@keyframes ripple-anim { 0%{transform:scale(0);opacity:1} 100%{transform:scale(2.5);opacity:0} }
+
+/* ── TYPING INDICATOR ── */
+.typing-bar {
+  background:var(--bg3); border:1px solid var(--border); border-radius:8px;
+  padding:.4rem .7rem; font-size:.65rem; color:var(--muted); font-family:'DM Mono';
+  display:flex; align-items:center; gap:.5rem; margin-top:.5rem;
+}
+.typing-dots span {
+  display:inline-block; width:5px; height:5px; border-radius:50%; background:var(--blue);
+  animation: tdot .9s infinite;
+}
+.typing-dots span:nth-child(2) { animation-delay:.2s; }
+.typing-dots span:nth-child(3) { animation-delay:.4s; }
+@keyframes tdot { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-4px)} }
+
+/* STEP LABEL */
+.step-label-badge {
+  position:absolute; bottom:.6rem; left:50%; transform:translateX(-50%);
+  background:rgba(0,191,255,.15); border:1px solid rgba(0,191,255,.3);
+  border-radius:999px; padding:.25rem .8rem; font-size:.6rem; color:var(--blue);
+  font-family:'DM Mono'; white-space:nowrap; z-index:20;
+}
+
+/* RESPONSIVE */
+@media(max-width:700px){
+  .phone-wrap { position:relative; top:0; }
+  .phone { width:240px; height:480px; }
+  .page { padding:1rem 1rem 3rem; }
+  .page-header h1 { font-size:1.8rem; }
+  .controls { margin-top:0; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="page-header">
+    <div class="logo">Pádel<span>Majadahonda</span></div>
+    <h1>DEMO DEL SISTEMA<br>DE <em>RESERVAS</em></h1>
+    <p>Así de fácil reservan los ciudadanos · 4 pasos · Menos de 1 minuto</p>
+  </div>
+
+  <div class="demo-wrapper">
+
+    <!-- PHONE -->
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="screen" id="screen">
+
+          <!-- STEP 1: FECHA -->
+          <div class="step active" id="step-0">
+            <div class="s-header">
+              <div class="s-logo">Pádel<span>Maj.</span></div>
+              <button class="s-login-btn">Iniciar sesión</button>
+            </div>
+            <div class="s-body">
+              <div class="s-section">Selecciona fecha</div>
+              <div class="mini-cal">
+                <div class="mini-cal-nav">
+                  <span style="font-size:.6rem;color:var(--muted)">‹</span>
+                  <span class="mini-cal-month">JUNIO 2026</span>
+                  <span style="font-size:.6rem;color:var(--muted)">›</span>
+                </div>
+                <div class="mini-cal-grid" id="calGrid"></div>
+              </div>
+              <div class="s-section" style="margin-top:.8rem;">Horario disponible</div>
+              <div class="mini-slots" id="slotsGrid"></div>
+            </div>
+            <div class="step-label-badge">Paso 1 · Elige fecha y hora</div>
+          </div>
+
+          <!-- STEP 2: PISTA -->
+          <div class="step" id="step-1">
+            <div class="s-header">
+              <div class="s-logo">Pádel<span>Maj.</span></div>
+              <button class="s-login-btn">Iniciar sesión</button>
+            </div>
+            <div class="s-body">
+              <div class="typing-bar">
+                <div class="typing-dots"><span></span><span></span><span></span></div>
+                Cargando disponibilidad...
+              </div>
+              <div class="s-section" style="margin-top:.8rem;">Elige tu pista</div>
+              <div class="mini-courts" id="courtsGrid"></div>
+              <div class="s-section" style="margin-top:.8rem;">Duración</div>
+              <div style="display:flex;gap:4px;">
+                <div style="flex:1;padding:.35rem;text-align:center;background:var(--card);border:1px solid var(--border);border-radius:6px;font-size:.6rem;font-family:'DM Mono';color:var(--muted);">60 min</div>
+                <div style="flex:1;padding:.35rem;text-align:center;background:rgba(0,191,255,.15);border:1.5px solid var(--blue);border-radius:6px;font-size:.6rem;font-family:'DM Mono';color:var(--blue);font-weight:700;">90 min</div>
+                <div style="flex:1;padding:.35rem;text-align:center;background:var(--card);border:1px solid var(--border);border-radius:6px;font-size:.6rem;font-family:'DM Mono';color:var(--muted);">120 min</div>
+              </div>
+            </div>
+            <div class="step-label-badge">Paso 2 · Selecciona pista</div>
+          </div>
+
+          <!-- STEP 3: RESUMEN -->
+          <div class="step" id="step-2">
+            <div class="s-header">
+              <div class="s-logo">Pádel<span>Maj.</span></div>
+              <div style="display:flex;align-items:center;gap:.4rem;">
+                <div style="width:6px;height:6px;border-radius:50%;background:var(--green);"></div>
+                <span style="font-size:.65rem;color:var(--text);">Juan G.</span>
+              </div>
+            </div>
+            <div class="s-body">
+              <div class="s-section">Resumen de reserva</div>
+              <div class="mini-summary">
+                <div class="ms-row"><span class="ml">Fecha</span><span class="mv">Vie 12 Jun 2026</span></div>
+                <div class="ms-row"><span class="ml">Hora</span><span class="mv">18:30</span></div>
+                <div class="ms-row"><span class="ml">Duración</span><span class="mv">90 min</span></div>
+                <div class="ms-row"><span class="ml">Pista</span><span class="mv">Pista 4</span></div>
+                <div class="ms-row"><span class="ml">Tipo</span><span class="mv">Descubierta ☀️</span></div>
+                <div class="ms-divider"></div>
+                <div class="ms-total">
+                  <span class="ml">Total</span>
+                  <span class="mp">18.00 €</span>
+                </div>
+              </div>
+              <div style="background:rgba(0,191,255,.07);border:1px solid rgba(0,191,255,.2);border-radius:8px;padding:.6rem;margin-top:.6rem;font-size:.62rem;color:var(--muted);text-align:center;">
+                🔒 Reserva segura · Cancelación gratuita hasta 2h antes
+              </div>
+              <button class="btn-confirm">CONFIRMAR RESERVA</button>
+            </div>
+            <div class="step-label-badge">Paso 3 · Confirma tu reserva</div>
+          </div>
+
+          <!-- STEP 4: ÉXITO -->
+          <div class="step" id="step-3">
+            <div class="s-header">
+              <div class="s-logo">Pádel<span>Maj.</span></div>
+              <div style="display:flex;align-items:center;gap:.4rem;">
+                <div style="width:6px;height:6px;border-radius:50%;background:var(--green);"></div>
+                <span style="font-size:.65rem;color:var(--text);">Juan G.</span>
+              </div>
+            </div>
+            <div class="success-screen">
+              <div class="success-check">✓</div>
+              <div class="success-title">¡RESERVA CONFIRMADA!</div>
+              <div class="success-sub">Tu pista está reservada.<br>Hemos enviado la confirmación a tu email.</div>
+              <div class="success-ref" id="demoRef">MAJ-A3F8B2</div>
+              <div style="background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.7rem;width:100%;text-align:left;">
+                <div style="font-size:.6rem;color:var(--muted);margin-bottom:.4rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px;">Detalles</div>
+                <div style="font-size:.65rem;color:var(--text);line-height:2;font-family:'DM Mono';">
+                  📅 Vie 12 Jun · 18:30h<br>
+                  🎾 Pista 4 · 90 min<br>
+                  💰 18.00 € · Pendiente pago
+                </div>
+              </div>
+            </div>
+            <div class="step-label-badge" style="background:rgba(0,232,122,.15);border-color:rgba(0,232,122,.3);color:var(--green);">✓ ¡Reserva completada!</div>
+          </div>
+
+          <!-- CURSOR -->
+          <div class="cursor" id="cursor" style="left:50%;top:50%;opacity:0;"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTROLS -->
+    <div class="controls">
+
+      <!-- STEP CARDS -->
+      <div class="step-cards" id="stepCards">
+        <div class="step-card active" onclick="goTo(0)">
+          <div class="sc-num">1</div>
+          <div class="sc-info">
+            <div class="sc-title">Seleccionar fecha y hora</div>
+            <div class="sc-desc">El ciudadano elige el día en el calendario y el horario disponible en tiempo real.</div>
+          </div>
+          <div class="sc-icon">📅</div>
+        </div>
+        <div class="step-card" onclick="goTo(1)">
+          <div class="sc-num">2</div>
+          <div class="sc-info">
+            <div class="sc-title">Elegir pista disponible</div>
+            <div class="sc-desc">Ve qué pistas están libres u ocupadas. Las ocupadas aparecen bloqueadas automáticamente.</div>
+          </div>
+          <div class="sc-icon">🎾</div>
+        </div>
+        <div class="step-card" onclick="goTo(2)">
+          <div class="sc-num">3</div>
+          <div class="sc-info">
+            <div class="sc-title">Confirmar reserva</div>
+            <div class="sc-desc">Resumen completo con fecha, hora, pista y precio antes de confirmar.</div>
+          </div>
+          <div class="sc-icon">✅</div>
+        </div>
+        <div class="step-card" onclick="goTo(3)">
+          <div class="sc-num">4</div>
+          <div class="sc-info">
+            <div class="sc-title">¡Reserva confirmada!</div>
+            <div class="sc-desc">Código único de reserva y email de confirmación automático. Sin llamadas, sin papel.</div>
+          </div>
+          <div class="sc-icon">🎉</div>
+        </div>
+      </div>
+
+      <!-- PLAYBACK -->
+      <div class="playback">
+        <div class="pb-title">Controles de reproducción</div>
+        <div class="pb-progress">
+          <div class="pb-bar" id="pbBar" style="width:0%"></div>
+        </div>
+        <div class="pb-btns">
+          <button class="pb-btn" id="btnPrev" onclick="prevStep()" disabled>‹ Anterior</button>
+          <button class="pb-btn primary" id="btnPlay" onclick="togglePlay()">▶ Auto</button>
+          <button class="pb-btn" id="btnNext" onclick="nextStep()">Siguiente ›</button>
+        </div>
+        <div class="pb-auto-row">
+          <span>Reproducción automática</span>
+          <button class="pb-toggle on" id="pbToggle" onclick="toggleAuto()"></button>
+        </div>
+        <div class="speed-row">
+          <span>Velocidad:</span>
+          <button class="speed-btn active" onclick="setSpeed(3000, this)">Normal</button>
+          <button class="speed-btn" onclick="setSpeed(1500, this)">Rápido</button>
+          <button class="speed-btn" onclick="setSpeed(5000, this)">Lento</button>
+        </div>
+      </div>
+
+      <!-- INFO -->
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem;">
+        <div style="font-size:.72rem;color:var(--muted);font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:.6rem;">¿Por qué Pádel Majadahonda?</div>
+        <div style="display:flex;flex-direction:column;gap:.5rem;">
+          <div style="display:flex;align-items:center;gap:.6rem;font-size:.8rem;">
+            <span style="color:var(--green);font-size:1rem;">✓</span>
+            <span>Reservas 24/7 desde cualquier móvil</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:.6rem;font-size:.8rem;">
+            <span style="color:var(--green);font-size:1rem;">✓</span>
+            <span>Sin solapamientos — base de datos en tiempo real</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:.6rem;font-size:.8rem;">
+            <span style="color:var(--green);font-size:1rem;">✓</span>
+            <span>Propiedad del ayuntamiento — datos seguros</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:.6rem;font-size:.8rem;">
+            <span style="color:var(--green);font-size:1rem;">✓</span>
+            <span style="color:var(--accent);font-weight:600;">Coste: 0 € / mes</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ── ESTADO ──
+let currentStep = 0;
+let autoPlay = true;
+let playing = false;
+let timer = null;
+let speed = 3000;
+const TOTAL = 4;
+
+// ── CALENDARIO ──
+function buildCal() {
+  const grid = document.getElementById('calGrid');
+  const dows = ['L','M','X','J','V','S','D'];
+  dows.forEach(d => {
+    const el = document.createElement('div');
+    el.className = 'mc-dow'; el.textContent = d;
+    grid.appendChild(el);
+  });
+  // Junio 2026 empieza en lunes (dow=1)
+  const start = 0; // lunes
+  const days = 30;
+  for(let i=0;i<start;i++){
+    const el=document.createElement('div'); el.className='mc-day empty'; grid.appendChild(el);
+  }
+  const taken = [3,4,8,11,15,17,20,22,25];
+  for(let d=1;d<=days;d++){
+    const el=document.createElement('div');
+    el.className='mc-day' + (d<new Date().getDate()&&false?' past':'') + (d===12?' selected':'') + (d===13||d===14?' highlight':'');
+    el.textContent=d;
+    grid.appendChild(el);
+  }
+}
+
+// ── SLOTS ──
+function buildSlots() {
+  const grid = document.getElementById('slotsGrid');
+  const slots = ['08:00','09:00','10:00','10:30','11:00','11:30','16:00','16:30','17:00','17:30','18:00','18:30'];
+  const taken = ['09:00','10:30','11:30','16:30','17:30'];
+  slots.forEach(s => {
+    const el = document.createElement('div');
+    const isTaken = taken.includes(s);
+    const isSel = s==='18:30';
+    el.className = 'ms-slot' + (isTaken?' taken':'') + (isSel?' selected':'');
+    el.textContent = isTaken ? 'Ocupado' : s;
+    grid.appendChild(el);
+  });
+}
+
+// ── PISTAS ──
+function buildCourts() {
+  const grid = document.getElementById('courtsGrid');
+  const courts = [
+    {n:'Pista 1',taken:true},{n:'Pista 2',taken:false},{n:'Pista 3',taken:false},
+    {n:'Pista 4',taken:false,sel:true},{n:'Pista 5',taken:true},{n:'Pista 6',taken:false},
+    {n:'Pista 7',taken:false},{n:'Pista 8',taken:true},{n:'Pista 9',taken:false},
+  ];
+  courts.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'mc-court' + (c.taken?' taken':'') + (c.sel?' selected':'');
+    el.innerHTML = `<div class="ci">🎾</div><div class="cn">${c.n}</div>${c.taken?'<div class="ct">Ocupada</div>':`<div class="cp">18€</div>`}`;
+    grid.appendChild(el);
+  });
+}
+
+// ── NAVEGACIÓN ──
+function goTo(n) {
+  if(n<0||n>=TOTAL) return;
+  document.getElementById('step-'+currentStep).classList.remove('active');
+  currentStep = n;
+  document.getElementById('step-'+currentStep).classList.add('active');
+  updateUI();
+  if(autoPlay && !playing) startAuto();
+}
+
+function nextStep() { if(currentStep<TOTAL-1) goTo(currentStep+1); else if(autoPlay){ currentStep=0; goTo(0); } }
+function prevStep() { if(currentStep>0) goTo(currentStep-1); }
+
+function updateUI() {
+  // Progress bar
+  document.getElementById('pbBar').style.width = ((currentStep/(TOTAL-1))*100)+'%';
+  // Buttons
+  document.getElementById('btnPrev').disabled = currentStep===0;
+  document.getElementById('btnNext').disabled = currentStep===TOTAL-1 && !autoPlay;
+  // Step cards
+  document.querySelectorAll('.step-card').forEach((c,i)=>{
+    c.classList.toggle('active', i===currentStep);
+    c.classList.toggle('done', i<currentStep);
+    c.querySelector('.sc-num').textContent = i<currentStep ? '✓' : i+1;
+  });
+  // Play button
+  document.getElementById('btnPlay').textContent = playing ? '⏸ Pausa' : '▶ Auto';
+}
+
+function togglePlay() {
+  if(playing) { stopAuto(); }
+  else { autoPlay=true; document.getElementById('pbToggle').classList.add('on'); startAuto(); }
+}
+
+function startAuto() {
+  if(playing) return;
+  playing = true;
+  document.getElementById('btnPlay').textContent = '⏸ Pausa';
+  tick();
+}
+
+function stopAuto() {
+  playing = false;
+  clearTimeout(timer);
+  document.getElementById('btnPlay').textContent = '▶ Auto';
+}
+
+function tick() {
+  if(!playing) return;
+  timer = setTimeout(()=>{
+    if(currentStep >= TOTAL-1) {
+      // Pausa en el último paso y reinicia
+      setTimeout(()=>{ goTo(0); tick(); }, speed*1.5);
+      return;
+    }
+    nextStep();
+    tick();
+  }, speed);
+}
+
+function toggleAuto() {
+  autoPlay = !autoPlay;
+  document.getElementById('pbToggle').classList.toggle('on', autoPlay);
+  if(autoPlay) startAuto(); else stopAuto();
+}
+
+function setSpeed(s, btn) {
+  speed = s;
+  document.querySelectorAll('.speed-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(playing){ stopAuto(); startAuto(); }
+}
+
+// ── INIT ──
+buildCal();
+buildSlots();
+buildCourts();
+updateUI();
+// Autoplay al cargar
+setTimeout(()=>startAuto(), 1500);
+</script>
+</body>
+</html>
